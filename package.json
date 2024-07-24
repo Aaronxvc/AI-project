@@ -1,0 +1,32 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.6"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "natural": "^7.1.0"
+  },
+  "name": "ai-project",
+  "version": "1.0.0",
+  "description": "AI chatbot that can help in dev processes",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aaronxvc/AI-Project.git"
+  },
+  "keywords": [
+    "chatbot",
+    "NLP",
+    "Node.js"
+  ],
+  "author": "Aaron",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aaronxvc/AI-Project/issues"
+  },
+  "homepage": "https://github.com/Aaronxvc/AI-Project#readme"
+}
