@@ -18,7 +18,8 @@ function appendMessage(sender, message) {
 
 async function botResponse(input) {
     try {
-        const response = await fetch('/nlp', {  // Use relative URL
+        console.log("Sending input to server:", input); // Debugging line
+        const response = await fetch('/nlp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,11 +27,15 @@ async function botResponse(input) {
             body: JSON.stringify({ input })
         });
 
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         const data = await response.json();
+        console.log("Bot response:", data); // Debugging line
         appendMessage('Bot', data.response);
     } catch (error) {
         console.error('Error:', error);
         appendMessage('Bot', "I'm having trouble processing your request.");
     }
 }
-

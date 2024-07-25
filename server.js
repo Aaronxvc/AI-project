@@ -2,30 +2,37 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const natural = require('natural');
 const path = require('path');
-const corsConfig = require('./config/corsConfig'); // Import the CORS configuration
-const nlpRoutes = require('./routes/nlpRoutes'); // Import the routes
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+    origin: 'http://localhost:3000', // Adjust as needed
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+};
+app.use(cors(corsOptions));
+
+// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Tokenizer
 const tokenizer = new natural.WordTokenizer();
 
-app.use('/', nlpRoutes); // Use the routes
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
-
+// Routes
 app.post('/nlp', (req, res) => {
     const input = req.body.input;
-    const tokens = tokenizer.tokenize(input);
+    console.log("Received input:", input); // Log input
+
+    const tokens = tokenizer.tokenize(input.toLowerCase()); // Normalize case
+    console.log("Tokens:", tokens); // Log tokens
+
     let response = "I'm not sure what you mean.";
-    
+
     // Basic greetings
     if (tokens.includes('hello')) {
         response = "Hello!";
@@ -99,6 +106,7 @@ app.post('/nlp', (req, res) => {
     res.json({ response });
 });
 
+// Start server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
