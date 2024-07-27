@@ -1,41 +1,42 @@
-document.getElementById('send-btn').addEventListener('click', function() {
-    let userInput = document.getElementById('user-input').value;
-    if (userInput) {
-        appendMessage('User', userInput);
-        document.getElementById('user-input').value = '';
-        botResponse(userInput);
-    }
-});
+async function sendMessage() {
+    const userInput = document.getElementById('user-input').value;
+    const chatBox = document.getElementById('chat-box');
 
-function appendMessage(sender, message) {
-    let outputDiv = document.getElementById('output');
-    let messageDiv = document.createElement('div');
-    messageDiv.className = sender;
-    messageDiv.textContent = `${sender}: ${message}`;
-    outputDiv.appendChild(messageDiv);
-    outputDiv.scrollTop = outputDiv.scrollHeight;
-}
+    if (!userInput) return;
 
-async function botResponse(input) {
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.textContent = `User: ${userInput}`;
+    chatBox.appendChild(userMessageDiv);
+
+    document.getElementById('user-input').value = '';
+
     try {
-        console.log("Sending input to server:", input); // Debugging line
-        const response = await fetch('/nlp', {
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ input })
+            body: JSON.stringify({ message: userInput })
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Unknown error');
         }
 
         const data = await response.json();
-        console.log("Bot response:", data); // Debugging line
-        appendMessage('Bot', data.response);
+
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.textContent = `Bot: ${data.reply}`;
+        chatBox.appendChild(botMessageDiv);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
     } catch (error) {
-        console.error('Error:', error);
-        appendMessage('Bot', "I'm having trouble processing your request.");
+        console.error('Error sending message:', error);
+        const errorMessageDiv = document.createElement('div');
+        errorMessageDiv.textContent = `Error: ${error.message}`;
+        chatBox.appendChild(errorMessageDiv);
     }
 }
+
+document.getElementById('send-btn').addEventListener('click', sendMessage);

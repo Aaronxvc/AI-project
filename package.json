@@ -1,33 +1,20 @@
 {
-  "devDependencies": {
-    "tailwindcss": "^3.4.6"
-  },
-  "dependencies": {
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "natural": "^7.1.0"
-  },
-  "name": "ai-project",
+  "name": "chatgpt",
   "version": "1.0.0",
-  "description": "AI chatbot that can help in dev processes",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Aaronxvc/AI-Project.git"
-  },
-  "keywords": [
-    "chatbot",
-    "NLP",
-    "Node.js"
-  ],
-  "author": "Aaron",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Aaronxvc/AI-Project/issues"
-  },
-  "homepage": "https://github.com/Aaronxvc/AI-Project#readme"
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "openai": "^4.53.2"
+  }
 }
+
