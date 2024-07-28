@@ -1,18 +1,20 @@
 import express from 'express';
-import OpenAI from 'openai';
+import OpenAI from 'openai'; // Correct import
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import natural from 'natural';
+import { openDb } from './database.js';
+import Fuse from 'fuse.js';
 
 dotenv.config(); // This initializes the dotenv configuration
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-console.log('OpenAI API Key:', process.env['OPENAI_API_KEY']);  // Log API key for verification
+console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);  // Log API key for verification
 
 const openAIClient = new OpenAI({
-    apiKey: process.env['OPENAI_API_KEY']
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 app.use(bodyParser.json());
@@ -29,27 +31,21 @@ app.post('/api/chat', async (req, res) => {
     const tokenizer = new natural.WordTokenizer();
     const tokens = tokenizer.tokenize(userMessage.toLowerCase());
 
-    // Static responses
-    const staticResponses = {
-        debug: "To debug code, start by checking for syntax errors and ensuring all variables are properly defined. Use console.log() statements to trace the execution flow and identify where the code may be failing.",
-        snippet: "Here is a sample code snippet in JavaScript:\n\n```javascript\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\n\nconsole.log(greet('World'));\n```",
-        explain: "Programming concepts can be complex, but breaking them down into smaller parts can help. For example, a function in JavaScript is a reusable block of code that performs a specific task. You define it once and can call it multiple times with different inputs."
-    };
+    const db = await openDb();
+    const responses = await db.all('SELECT * FROM responses');
+    const fuse = new Fuse(responses, { keys: ['keyword'] });
 
     let botReply = "I'm not sure how to respond to that.";
+    const bestMatch = fuse.search(tokens.join(' '))[0];
 
-    if (tokens.includes('debug')) {
-        botReply = staticResponses.debug;
-    } else if (tokens.includes('snippet')) {
-        botReply = staticResponses.snippet;
-    } else if (tokens.includes('explain')) {
-        botReply = staticResponses.explain;
+    if (bestMatch) {
+        botReply = bestMatch.item.response;
     } else {
         try {
             const completion = await openAIClient.chat.completions.create({
                 model: "gpt-4o-mini",
                 messages: [
-                    { role: "system", content: "You are a helpful assistant." },
+                    { role: "system", content: "You are a helpful assistant and Cs developer." },
                     { role: "user", content: userMessage }
                 ],
             });
