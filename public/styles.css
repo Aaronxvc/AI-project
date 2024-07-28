@@ -66,3 +66,8 @@ body {
     text-align: left;
     color: #008000;
 }
+
+.Error {
+    text-align: left;
+    color: red;
+}

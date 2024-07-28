@@ -5,6 +5,7 @@ async function sendMessage() {
     if (!userInput) return;
 
     const userMessageDiv = document.createElement('div');
+    userMessageDiv.classList.add('User');
     userMessageDiv.textContent = `User: ${userInput}`;
     chatBox.appendChild(userMessageDiv);
 
@@ -27,6 +28,7 @@ async function sendMessage() {
         const data = await response.json();
 
         const botMessageDiv = document.createElement('div');
+        botMessageDiv.classList.add('Bot');
         botMessageDiv.textContent = `Bot: ${data.reply}`;
         chatBox.appendChild(botMessageDiv);
 
@@ -34,9 +36,16 @@ async function sendMessage() {
     } catch (error) {
         console.error('Error sending message:', error);
         const errorMessageDiv = document.createElement('div');
+        errorMessageDiv.classList.add('Error');
         errorMessageDiv.textContent = `Error: ${error.message}`;
         chatBox.appendChild(errorMessageDiv);
     }
 }
 
 document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('user-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
